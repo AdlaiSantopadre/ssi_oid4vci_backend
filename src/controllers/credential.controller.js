@@ -1,6 +1,7 @@
+import { signCredential } from "../agent-adapter/veramo.adapter.js"
 import { issueVerifiableCredential } from "../services/vc-issuance.service.js"
 
-export function issueCredential(req, res) {
+export async function issueCredential(req, res) {
   const auth = req.headers.authorization
   if (!auth || !auth.startsWith("Bearer ")) {
     return res.status(401).json({ error: "invalid_token" })
@@ -13,8 +14,8 @@ export function issueCredential(req, res) {
 
   const vc = issueVerifiableCredential({
     subjectDid: subject_did,
-    issuerDid: process.env.OID4VCI_ISSUER_DID || "did:example:issuer"
+//issuerDid: process.env.OID4VCI_ISSUER_DID || "did:example:issuer"
   })
-
-  res.json(vc)
+   const signed = await signCredential(vc)
+  res.json(signed)
 }
