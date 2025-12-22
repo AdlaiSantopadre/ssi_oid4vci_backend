@@ -24,6 +24,8 @@ import { getByState, markIssued } from "../services/issuer-state.service.js";
 import { signCredential, getIssuerDid } from "../agent-adapter/veramo.adapter.js";
 import { Binding } from "../models/binding.model.js";
 import crypto from "crypto";
+import { VcStatus } from "../models/vc-status.model.js";
+import { AuditLog } from "../models/audit.model.js";
 
 export async function issueCredential(req, res) {
   try {
@@ -64,6 +66,20 @@ export async function issueCredential(req, res) {
       credentialType: signedVc.type,
     });
     console.log("[OID4VCI] binding saved");
+    await VcStatus.create({
+      vcId,
+      subjectDid: subject.id,
+      issuerDid: await getIssuerDid(),
+      status: "issued"
+    });
+    console.log("[VC-STATUS] create issued:", vcId);
+    await AuditLog.create({
+      event: "issue",
+      vcId,
+      subjectDid: subject.id,
+      issuerDid: await getIssuerDid(),
+      meta: { format: "jwt_vc" }
+    });
     await markIssued(token, "jwt_vc");
 
     return res.json({ format: "jwt_vc", credential: signedVc });

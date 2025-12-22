@@ -3,6 +3,7 @@ import { getIssuerMetadata } from "./controllers/metadata.controller.js"
 import { createCredentialOffer } from "./controllers/credential-offer.controller.js"
 import { issueToken } from "./controllers/token.controller.js"
 import { issueCredential } from "./controllers/credential.controller.js"
+import { setVcStatus } from "./controllers/vc-status.controller.js";
 
 const router = express.Router()
 
@@ -10,6 +11,7 @@ router.get("/.well-known/openid-credential-issuer", getIssuerMetadata)
 router.get("/credential-offer", createCredentialOffer)
 router.post("/token", issueToken)
 router.post("/credential", issueCredential)
+router.patch("/vc-status/:vcId", setVcStatus)
 
 export default router
 
