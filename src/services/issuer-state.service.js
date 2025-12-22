@@ -44,7 +44,9 @@ export async function createSession({ ttlSec } = {}) {
 }
 
 export async function getByState(state) {
+  console.log("[STATE] lookup token:", state);
   return await IssuerState.findOne({ state }).lean();
+
 }
 
 export async function consumeState(state) {

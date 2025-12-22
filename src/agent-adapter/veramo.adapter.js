@@ -58,21 +58,41 @@ const agent = createAgent({
 })
 
 let issuerDid
-
+// Ottiene o crea un DID per l'issuer
 export async function getIssuerDid() {
-  if (!issuerDid) {
-    const did = await agent.didManagerCreate()
-    issuerDid = did.did
+  if (issuerDid) return issuerDid;
+
+  const existing = await agent.didManagerFind({});
+  if (existing.length > 0) {
+    issuerDid = existing[0].did;
+    console.log("[SSI] issuer DID:", issuerDid);
+    return issuerDid;
   }
-  return issuerDid
+
+  const created = await agent.didManagerCreate({ provider: "did:key" });
+  issuerDid = created.did;
+  console.log("[SSI] issuer DID:", issuerDid);
+  return issuerDid;
 }
 
-export async function signCredential(vc) {
-  const issuer = await getIssuerDid()
-  vc.issuer = { id: issuer }
 
-  return agent.createVerifiableCredential({
-    credential: vc,
-    proofFormat: "jwt"
-  })
+
+export async function signCredential(vc) {
+  try {
+    const issuer = await getIssuerDid();
+    vc.issuer = { id: issuer };
+
+    console.log("[SSI] signing with issuer:", issuer);
+
+    const res = await agent.createVerifiableCredential({
+      credential: vc,
+      proofFormat: "jwt",
+    });
+
+    console.log("[SSI] VC created");
+    return res;
+  } catch (e) {
+    console.error("[SSI] signCredential error:", e);
+    throw e;
+  }
 }

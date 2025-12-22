@@ -21,7 +21,9 @@ export async function issueCredential(req, res) {
 }*/
 // src/controllers/credential.controller.js
 import { getByState, markIssued } from "../services/issuer-state.service.js";
-import { signCredential } from "../agent-adapter/veramo.adapter.js";
+import { signCredential, getIssuerDid } from "../agent-adapter/veramo.adapter.js";
+import { Binding } from "../models/binding.model.js";
+import crypto from "crypto";
 
 export async function issueCredential(req, res) {
   try {
@@ -30,22 +32,41 @@ export async function issueCredential(req, res) {
     if (!token) return res.status(401).json({ error: "invalid_token" });
 
     const session = await getByState(token);
-    if (!session || session.status !== "consumed") return res.status(401).json({ error: "invalid_token" });
+    if (!session || session.status !== "consumed")
+      return res.status(401).json({ error: "invalid_token" });
 
     const subject = req.body?.credentialSubject;
-    if (!subject?.id) return res.status(400).json({ error: "invalid_request" });
+    if (!subject?.id)
+      return res.status(400).json({ error: "invalid_request" });
+    console.log("[OID4VCI] issuing VC for subjectDid:", subject.id);
 
     const vc = {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiableCredential"],
       issuanceDate: new Date().toISOString(),
-      credentialSubject: subject,
+      credentialSubject: {
+        id: subject.id,
+        role: "operator" //almeno una claim di esempio
+      },
     };
+    console.log("[OID4VCI] signing VC");
+    const signedVc = await signCredential(vc);
+    console.log("[OID4VCI] VC signed:", signedVc);
 
-    const jwtVc = await signCredential(vc);
+    console.log("[OID4VCI] saving binding");
+    const vcJwt = signedVc.proof.jwt;
+    const vcId = crypto.createHash("sha256").update(vcJwt).digest("hex");
+
+    await Binding.create({
+      subjectDid: subject.id,
+      issuerDid: await getIssuerDid(),
+      vcId,
+      credentialType: signedVc.type,
+    });
+    console.log("[OID4VCI] binding saved");
     await markIssued(token, "jwt_vc");
 
-    return res.json({ format: "jwt_vc", credential: jwtVc });
+    return res.json({ format: "jwt_vc", credential: signedVc });
   } catch {
     return res.status(500).json({ error: "server_error" });
   }
