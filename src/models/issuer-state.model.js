@@ -1,4 +1,4 @@
-// src/persistence/issuer-state.model.js
+// src/models/issuer-state.model.js
 import mongoose from "mongoose";
 
 const IssuerStateSchema = new mongoose.Schema(

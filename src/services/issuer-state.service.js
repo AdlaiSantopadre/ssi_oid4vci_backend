@@ -19,7 +19,7 @@ export function updateIssuerState(stateId, updates) {
 }*/
 // src/services/issuer-state.service.js
 import { nanoid } from "nanoid";
-import { IssuerState } from "../persistence/issuer-state.model.js";
+import { IssuerState } from "../models/issuer-state.model.js";
 
 const DEFAULT_TTL_SEC = Number(process.env.OID4VCI_STATE_TTL_SEC ?? 600);
 
