@@ -4,6 +4,8 @@ import { createCredentialOffer } from "./controllers/credential-offer.controller
 import { issueToken } from "./controllers/token.controller.js"
 import { issueCredential } from "./controllers/credential.controller.js"
 import { setVcStatus } from "./controllers/vc-status.controller.js";
+import { getVcStatus } from "./controllers/vc-status-read.controller.js";
+import { requireVcRole } from "./middleware/vc-auth.middleware.js";
 
 const router = express.Router()
 
@@ -12,7 +14,8 @@ router.get("/credential-offer", createCredentialOffer)
 router.post("/token", issueToken)
 router.post("/credential", issueCredential)
 router.patch("/vc-status/:vcId", setVcStatus)
-
+router.get("/vc-status/:vcId", getVcStatus);
+router.patch("/vc-status/:vcId",requireVcRole("issuer-admin"),setVcStatus);
 export default router
 
 //test curl -X POST http://localhost:3000/token -H "Content-Type: application/json" -d '{"grant_type":"urn:ietf:params:oauth:grant-type:pre-authorized_code"}'

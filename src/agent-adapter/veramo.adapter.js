@@ -26,7 +26,7 @@ const db = new DataSource({
 })
 await db.initialize()
 
-const agent = createAgent({
+export const agent = createAgent({
   plugins: [
     new KeyManager({
       store: new KeyStore(db),

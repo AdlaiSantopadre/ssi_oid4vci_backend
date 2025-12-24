@@ -23,19 +23,19 @@ export async function issueCredential(req, res) {
 import { getByState, markIssued } from "../services/issuer-state.service.js";
 import { signCredential, getIssuerDid } from "../agent-adapter/veramo.adapter.js";
 import { Binding } from "../models/binding.model.js";
-import crypto from "crypto";
+import crypto from "crypto";//
 import { VcStatus } from "../models/vc-status.model.js";
 import { AuditLog } from "../models/audit.model.js";
 
-export async function issueCredential(req, res) {
+export async function issueCredential(req, res) { // issue VC in JWT format
   try {
-    const auth = req.headers.authorization ?? "";
-    const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
-    if (!token) return res.status(401).json({ error: "invalid_token" });
+    const auth = req.headers.authorization ?? ""; // DEBUG temporaneo
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;// rimuovo "Bearer "
+    if (!token) return res.status(401).json({ error: "invalid_token" });//manca token
 
-    const session = await getByState(token);
-    if (!session || session.status !== "consumed")
-      return res.status(401).json({ error: "invalid_token" });
+    const session = await getByState(token);//recupero sessione da state=token
+    if (!session || session.status !== "consumed")//session inesistente o non consumata
+      return res.status(401).json({ error: "invalid_token" });//manca token
 
     const subject = req.body?.credentialSubject;
     if (!subject?.id)
