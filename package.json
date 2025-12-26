@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "backup:veramo": "node scripts/backup-veramo.js",
+    "restore:veramo": "node scripts/restore-veramo.js"
   },
   "dependencies": {
     "@veramo/core": "~4.2.0",
