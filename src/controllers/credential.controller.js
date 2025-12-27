@@ -32,16 +32,19 @@ export async function issueCredential(req, res) { // issue VC in JWT format
     const auth = req.headers.authorization ?? ""; // DEBUG temporaneo
     const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;// rimuovo "Bearer "
     if (!token) return res.status(401).json({ error: "invalid_token" });//manca token
-
+    // check if the state is valid and consumed
     const session = await getByState(token);//recupero sessione da state=token
     if (!session || session.status !== "consumed")//session inesistente o non consumata
       return res.status(401).json({ error: "invalid_token" });//manca token
 
+    console.log("[OID4VCI] session found for token:", token);
+    // estraggo subjectDid dalla richiesta
     const subject = req.body?.credentialSubject;
     if (!subject?.id)
+      // subjectDid is required
       return res.status(400).json({ error: "invalid_request" });
     console.log("[OID4VCI] issuing VC for subjectDid:", subject.id);
-
+    //
     const vc = {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiableCredential"],
@@ -52,13 +55,17 @@ export async function issueCredential(req, res) { // issue VC in JWT format
       },
     };
     console.log("[OID4VCI] signing VC");
+    // Firma la VC
     const signedVc = await signCredential(vc);
     console.log("[OID4VCI] VC signed:", signedVc);
 
     console.log("[OID4VCI] saving binding");
-    const vcJwt = signedVc.proof.jwt;
+    //
+    const vcJwt = signedVc.proof.jwt; // estraggo il JWT dalla VC firmata
+    // calcolo l'ID della VC come SHA-256 del JWT
     const vcId = crypto.createHash("sha256").update(vcJwt).digest("hex");
 
+    //
     await Binding.create({
       subjectDid: subject.id,
       issuerDid: await getIssuerDid(),

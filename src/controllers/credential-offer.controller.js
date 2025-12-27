@@ -1,4 +1,4 @@
-//
+ //
 /* in memory
 export function createCredentialOffer(req, res) {
   const offer = {

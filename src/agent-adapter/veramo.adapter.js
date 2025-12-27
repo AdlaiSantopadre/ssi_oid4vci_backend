@@ -76,14 +76,16 @@ export async function getIssuerDid() {
 }
 
 
-
+// Firma una Verifiable Credential in formato JWT
 export async function signCredential(vc) {
   try {
+    // Assicura che l'issuer sia impostato
     const issuer = await getIssuerDid();
+    // Imposta l'issuer nella VC
     vc.issuer = { id: issuer };
 
     console.log("[SSI] signing with issuer:", issuer);
-
+    // Crea la VC firmata in formato JWT
     const res = await agent.createVerifiableCredential({
       credential: vc,
       proofFormat: "jwt",

@@ -42,19 +42,24 @@ export async function createSession({ ttlSec } = {}) {
 
   return { sessionId: doc.sessionId, state: doc.state, nonce: doc.nonce, expiresAt: doc.expiresAt };
 }
-
+// Retrieves the issuer state by its state value
 export async function getByState(state) {
   console.log("[STATE] lookup token:", state);
   return await IssuerState.findOne({ state }).lean();
 
 }
-
+// Marks the state as consumed, preventing further use
 export async function consumeState(state) {
+  // atomic operation to avoid race conditions
   const res = await IssuerState.findOneAndUpdate(
+    // only pending or issued states can be consumed
     { state, status: { $in: ["pending", "issued"] } },
+    // mark as consumed
     { $set: { status: "consumed" } },
+
     { new: true }
-  ).lean();
+
+  ).lean(); //.lean() to get a plain JS object  
   return res;
 }
 
