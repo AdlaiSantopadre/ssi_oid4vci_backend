@@ -14,6 +14,7 @@ export function createCredentialOffer(req, res) {
 
   res.json(offer)
 }*/
+// src/controllers/crefential-offer.controller.js
 import { createSession } from "../services/issuer-state.service.js";
 
 export async function createCredentialOffer(req, res) {
