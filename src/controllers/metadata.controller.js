@@ -1,3 +1,4 @@
+// src/comtrollers/metadata.controller.js
 export function getIssuerMetadata(req, res) {
   res.json({
     issuer: process.env.OID4VCI_ISSUER_URL,
