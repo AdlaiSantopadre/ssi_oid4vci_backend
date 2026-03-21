@@ -1,3 +1,4 @@
+//src/adapter/veramo.adapter.js
 import { createAgent } from "@veramo/core"
 import { CredentialPlugin } from "@veramo/credential-w3c"
 import { KeyManager } from "@veramo/key-manager"
