@@ -65,7 +65,7 @@ export async function issueCredential(req, res) { // issue VC in JWT format
     // calcolo l'ID della VC come SHA-256 del JWT
     const vcId = crypto.createHash("sha256").update(vcJwt).digest("hex");
 
-    //
+    // Salvo il binding tra subjectDid, issuerDid e vcId
     await Binding.create({
       subjectDid: subject.id,
       issuerDid: await getIssuerDid(),

@@ -2,6 +2,9 @@
   "name": "ssi-oid4vci-backend",
   "version": "0.1.0",
   "type": "module",
+  "exports": {
+    "./middleware/vc-auth": "./src/middleware/vc-auth.middleware.js"
+  },
   "private": true,
   "scripts": {
     "dev": "nodemon src/index.js",
