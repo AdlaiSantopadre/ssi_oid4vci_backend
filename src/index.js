@@ -1,9 +1,10 @@
 // src/index.js
 import dotenv from "dotenv"
+dotenv.config()
 import { app } from "./app.js";
 import mongoose from "mongoose";
 
-dotenv.config()
+
 
 const PORT = Number(process.env.PORT ?? 3000);
 if (!process.env.MONGODB_URI) throw new Error("Missing MONGODB_URI in .env");
