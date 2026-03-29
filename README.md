@@ -11,15 +11,17 @@ Veramo, abbreviazione di *VERifiable information And MObility* è un framework n
 
 Veramo è stato sviluppato in conformità al World Wide Web Consortium (W3C) ed è stato uno dei primi progetti all'interno della comunità Decentralized Identity Foundation (DIF).
 
-I riferimenti per la implementazione di Veramo sono stati cercati nel repository GitHub \href{https://github.com/decentralized-identity/veramo}
+I riferimenti per la implementazione di Veramo sono stati cercati nel repository GitHub https://github.com/decentralized-identity/veramo
 
 
-### Nota:Nel corso delle sezioni successive appaiono termini tecnici comprensibili approfondendo il vasto lavoro delle specifiche e linee guida del W3C (W3C_TR_Specifications}
+**Nota:Nel corso delle sezioni successive appaiono termini tecnici definiti nel vasto lavoro delle specifiche e linee guida del W3C" (W3C_TR_Specifications}**
+
 ## SDK Sphereon
-L'implementazione della SSI è avvenuta progettando un modulo di servizio dedicato per la gestione dell'identità decentralizzata e dell'emissione di Verifiable Credentials (VC), separato al livello logico dal backend applicativo DCMS.
+//L'implementazione della SSI è avvenuta progettando un modulo di servizio dedicato per la gestione dell'identità decentralizzata e dell'emissione di Verifiable Credentials (VC), separato al livello logico dal backend applicativo DCMS.//
  
-Approfondendo la documentazione di Veramo e confrontandola con la piattaforma Verifiable Data Infrustructure Sphereon {*Sphereon_SSI_SDK*} che fa uso di parte della suo software, abbiamo dovuto riscontrato alcune difficoltà nella implementazione di un agente Veramo.
-Nel tutorial dimostrativo di Veramo abbiamo constatato che esso nella sua ultima versione è un agente monolitico locale, con un archivio SQLite \textit{embedded}, che fa  uso del metodo \textit{DID ethr} \footnote{uno dei metodi di DID possibili, mappato in questo caso con una identità conformata agli indirizzi di Ethereum} senza quelle caratteristiche di "separazione per tenant" e "binding applicativo DID <-> utente <-> ruolo" da adottare nel nostro caso.
+Approfondendo la documentazione di Veramo e confrontandola con la piattaforma Verifiable Data Infrustructure Sphereon {*Sphereon_SSI_SDK*} che fa uso di parte della libreria Veramo, abbiamo  riscontrato alcune difficoltà nella implementazione di un agente Veramo.  
+
+Nel tutorial dimostrativo di Veramo abbiamo constatato che esso nella sua ultima versione è un agente monolitico locale, con un archivio SQLite * embedded *, che fa  uso del metodo * DID ethr * uno dei metodi di DID possibili, mappato in questo caso con una identità conformata agli indirizzi di Ethereum} senza quelle caratteristiche di "separazione per tenant" e "binding applicativo DID <-> utente <-> ruolo" da adottare nel nostro caso.
 
 Le API  “di Veramo” esistono, ma non sono automaticamente un interfaccia diretta con il protocollo http;  
 sono piuttosto API JavaScript/TypeScript presenti nei pacchetti SDK (@veramo/core e plugin) e non diventano automaticamente API in stile Representational state transfer (REST)/http.
